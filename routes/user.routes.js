@@ -77,10 +77,8 @@ router.delete("/:_id", (req, res) => {
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-
   if (!email || !password)
     return res.status(400).json({ msg: "Please Enter Details" });
-
 
   // check user exists or not
   UserSchema.findOne({ email }, (err, data) => {
@@ -98,5 +96,39 @@ router.post("/login", (req, res) => {
     });
   });
 });
+
+// update password
+router.patch("/upd", (req, res) => {
+  const { email, op, cp } = req.body;
+  // console.log(req.body)
+  // return res.send(req.body)
+
+  // check user exists or not
+  UserSchema.findOne({ email }, (err, data) => {
+    if (err) return res.status(500).json({ msg: err.message });
+    if (!data) return res.status(404).json({ msg: "Something Wrong" });
+
+    let { password, _id } = data;
+
+    // match user password with database
+
+    bcrypt.compare(op, password, (err, isValid) => {
+      if (err) return res.status(502).json({ msg: err.message });
+      if (!isValid) return res.status(404).json({ msg: "Something Wrong" });
+
+      bcrypt.hash(cp, 12, (err, hashPass) => {
+        if (err) return res.status(503).json({ msg: err.message });
+        if (!hashPass) return res.status(501).json({ msg: "Please Try Again" });
+
+        UserSchema.findByIdAndUpdate({ _id }, { password:hashPass }, (err, data) => {
+          if (err) return res.status(504).json({ msg: err.message });
+          if (!data) return res.status(200).json({ msg: "No User Found" });
+          res.status(200).json({ msg: "User Updated" });
+        });
+      });
+    });
+  });
+});
+
 
 module.exports = router;

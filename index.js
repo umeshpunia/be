@@ -2,7 +2,7 @@
 const express = require("express");
 require("dotenv").config()
 const mongoose=require("mongoose")
-
+const cors=require("cors")
 
 
 
@@ -14,7 +14,8 @@ const port = PORT || 8080;
 
 // middlewares
 app.use(express.json())
-
+app.use(cors())
+app.use("/images",express.static("assets/images"))
 
 // connection
 mongoose.connect(`mongodb+srv://${DBUSER}:${DBPASS}@umesh.hybg3.mongodb.net/${DBNAME}?retryWrites=true&w=majority`,(err)=>{
@@ -30,6 +31,7 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/api/v1/user",require("./routes/user.routes"));
+app.use("/api/v1/category",require("./routes/category.routes"));
 
 
 
