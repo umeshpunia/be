@@ -26,13 +26,13 @@ mongoose.connect(`mongodb+srv://${DBUSER}:${DBPASS}@umesh.hybg3.mongodb.net/${DB
 
 
 // routes
-app.get("/",(req,res)=>{
-    res.send("Hello Backend")
-})
 
+
+app.use("/",express.static("public"))
 app.use("/api/v1/user",require("./routes/user.routes"));
 app.use("/api/v1/category",require("./routes/category.routes"));
-
+app.use("/api/v1/product",require("./routes/product.routes"));
+app.use("/api/v1/front",require("./routes/front.routes"))
 
 
 
